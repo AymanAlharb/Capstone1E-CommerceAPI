@@ -1,5 +1,5 @@
 # E-commerce API Documentation
-
+This project is part of the **Web Development Program Using Java and SpringBoot** presented by **Tuwaiq Academy**.
 ## Models
 
 ### 1. User
