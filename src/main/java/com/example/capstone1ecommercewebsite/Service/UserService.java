@@ -107,13 +107,13 @@ public class UserService {
         User user = searchUser(userId);
         if (user == null) return '0'; //User not found.
         //Calculate the total price.
-        double totalPrice = sumUpTotalPrice(user, user.getShopping_cart());
+        double totalPrice = sumUpTotalPrice(user.getShopping_cart());
         //Apply discount .
         totalPrice = applyDiscount(user.isHasDiscount(), totalPrice, user.getDiscountAmount());
         //Check user balance.
         if (totalPrice > user.getBalance()) {
             //Insufficient balance: restock products and clear cart.
-            merchantStockService.restockDueToUserInsufficientBalance(user.getShopping_cart(), user);
+            merchantStockService.restockDueToUserInsufficientBalance(user.getShopping_cart());
             user.getShopping_cart().clear();
             return '1'; //Insufficient balance.
         }
@@ -148,16 +148,8 @@ public class UserService {
         return '2'; // Checked out successfully.
     }
 
-    //Add products to the acquired list.
-    public void addProductsToAcquiredList(User user, ArrayList<String> cart) {
-        for (String productId : cart) {
-            //Add to the acquired list
-            user.getAcquired_products_list().add(productId);
-        }
-    }
-
     //Sum up the total price of the cart
-    public double sumUpTotalPrice(User user, ArrayList<String> cart) {
+    public double sumUpTotalPrice(ArrayList<String> cart) {
         double totalPrice = 0;
         for (String productId : cart) {
             //Get the product.
@@ -229,7 +221,7 @@ public class UserService {
 
         //Check if the product is in the list.
         if (!user.getAcquired_products_list().contains(productId)) {
-            return '2'; // Product not found.
+            return '2'; //Product not found.
         }
 
         //Get the product object.
@@ -242,6 +234,10 @@ public class UserService {
         //Remove the product from the list.
         user.getAcquired_products_list().remove(productId);
 
+        //Get the product price
+        double productPrice = product.getPrice();
+        //Apply discount
+        productPrice = applyDiscount(user.isHasDiscount(), productPrice, user.getDiscountAmount());
         //Add the money back to the user balance.
         user.setBalance(user.getBalance() + product.getPrice());
 
@@ -267,7 +263,7 @@ public class UserService {
         User user = searchUser(userId);
         if (user == null) return -404.0; //User not found.
         //Get the total price.
-        double totalPrice = sumUpTotalPrice(user, user.getShopping_cart());
+        double totalPrice = sumUpTotalPrice(user.getShopping_cart());
         //Apply discount.
         totalPrice = applyDiscount(user.isHasDiscount(), totalPrice, user.getDiscountAmount());
         //Return the total.

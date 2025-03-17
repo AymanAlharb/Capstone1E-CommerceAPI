@@ -76,7 +76,7 @@ public class MerchantStockService {
     }
 
     //This method get called by the user service checkOut method when user balance is insufficient.
-    public void restockDueToUserInsufficientBalance(ArrayList<String> cart, User user) {
+    public void restockDueToUserInsufficientBalance(ArrayList<String> cart) {
         for (String productId : cart) {
             //Get the merchantStock.
             MerchantStock tempMerchantStock = getMerchantStockByStockProductId(productId);
