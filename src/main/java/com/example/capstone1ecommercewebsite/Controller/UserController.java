@@ -143,7 +143,7 @@ public class UserController {
         };
     }
 
-    @GetMapping("get-cart-total/{userId}")
+    @GetMapping("/get-cart-total/{userId}")
     public ResponseEntity getTotalMoneyAmountFromUserCart(@PathVariable String userId) {
         double totalMoney = service.getTotalMoneyAmountForUserCart(userId);
         if (totalMoney == -404) return ResponseEntity.status(404).body(new ApiResponse("User not found."));
